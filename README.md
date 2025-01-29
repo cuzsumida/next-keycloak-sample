@@ -1,3 +1,6 @@
+## setup auth.js
+https://authjs.dev/getting-started/installation?framework=next-js
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
