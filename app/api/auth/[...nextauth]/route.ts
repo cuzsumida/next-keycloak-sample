@@ -1,7 +1,3 @@
-import { authConfig } from "@/config/authConfig";
-import NextAuth from "next-auth";
+import { handlers } from "@/auth"; // auth.ts から handlers をインポート
 
-export const {
-  handlers: { GET, POST },
-  auth,
-} = NextAuth(authConfig);
+export const { GET, POST } = handlers;

@@ -1,8 +1,17 @@
 import { NextAuthConfig } from "next-auth";
+import { UpstashRedisAdapter } from "@auth/upstash-redis-adapter"
 import CustomProvider from "@/lib/CustomProvider";
+import { Redis } from "@upstash/redis"
 import { refreshAccessToken } from "@/utils/auth";
 
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL!,
+  token: process.env.UPSTASH_REDIS_TOKEN!,
+})
+
 export const authConfig: NextAuthConfig = {
+  // https://authjs.dev/getting-started/adapters/upstash-redis?framework=next-js#configuration
+  adapter: process.env.NODE_ENV === 'production' ? UpstashRedisAdapter(redis) : undefined,
   providers: [
     CustomProvider({
       clientId: process.env.CLIENT_ID!,
