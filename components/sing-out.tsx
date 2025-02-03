@@ -1,6 +1,6 @@
 import { signOut } from "@/auth"
 
-export default function SignIn() {
+export default function SignOut() {
   return (
     <form
       action={async () => {

@@ -13,7 +13,7 @@ export default function CustomProvider(
   options: OAuthUserConfig<CustomProfile>,
 ): OAuthConfig<CustomProfile> {
   return {
-    id: "custom",
+    id: "custom", // プロバイダーのID, 任意の文字列
     name: "Custom Provider",
     type: "oauth",
     authorization: {

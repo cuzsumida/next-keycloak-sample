@@ -1,14 +1,16 @@
 import { signIn } from "@/auth"
 
+
 export default function SignIn() {
   return (
     <form
       action={async () => {
         "use server"
-        await signIn("keycloak")
+        // lib\CustomProvider.ts
+        await signIn("custom", { callbackUrl: "http://localhost:3000" })
       }}
     >
-      <button type="submit">Signin with Keycloak</button>
+      <button type="submit">Signin with Custom Provider</button>
     </form>
   )
 } 
