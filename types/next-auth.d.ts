@@ -1,13 +1,16 @@
-// https://authjs.dev/getting-started/typescript?framework=next-js#resources
+import { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   * `useSession`、`getSession`、`Provider` によって返されるセッションオブジェクト
    */
   interface Session {
+    accessToken?: string;
+    refreshToken?: string;
+    error?: string;
     user: {
       /** The user's postal address. */
-      address: string
-    } & DefaultSession["user"]
+      id: string;
+    } & DefaultSession["user"];
   }
 }

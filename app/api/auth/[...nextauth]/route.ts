@@ -1,4 +1,7 @@
-import { handlers } from "@/auth";
+import { authConfig } from "@/config/authConfig";
+import NextAuth from "next-auth";
 
-export const { GET, POST } = handlers;
-console.log('api')
+export const {
+  handlers: { GET, POST },
+  auth,
+} = NextAuth(authConfig);
