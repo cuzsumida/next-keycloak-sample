@@ -15,7 +15,11 @@ export default function CustomProvider(
   return {
     id: "custom", // プロバイダーのID, 任意の文字列
     name: "Custom Provider",
-    type: "oauth",
+    clientId: process.env.CLIENT_ID,
+    type: "oidc",
+    issuer: process.env.AUTH_KEYCLOAK_ISSUER,
+    idToken: true,
+    wellKnown: process.env.WELL_KNOWN_ENDPOINT,
     authorization: {
       url: process.env.AUTHORIZATION_ENDPOINT,
       params: {
@@ -27,6 +31,7 @@ export default function CustomProvider(
         let tokens;
         try {
           tokens = await fetchTokens(context.params.code);
+          console.log('test', tokens)
         } catch (error) {
           console.error(error);
           throw new Error("Failed to fetch tokens");

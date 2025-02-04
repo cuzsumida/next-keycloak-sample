@@ -9,6 +9,7 @@ async function fetchTokens(
   const clientSecret = process.env.CLIENT_SECRET!;
   const redirectUri = process.env.REDIRECT_URI!;
 
+  console.log('test', tokenEndpoint, clientId, clientSecret, redirectUri)
   const response = await fetch(tokenEndpoint, {
     method: "POST",
     headers: {
