@@ -15,7 +15,6 @@ export default function CustomProvider(
   return {
     id: "custom", // プロバイダーのID, 任意の文字列
     name: "Custom Provider",
-    clientId: process.env.CLIENT_ID,
     type: "oidc",
     issuer: process.env.AUTH_KEYCLOAK_ISSUER,
     idToken: true,
