@@ -25,36 +25,36 @@ export default function CustomProvider(
         scope: "openid profile email",
       },
     },
-    token: {
-      async request(context: TokenEndpointHandler) {
-        let tokens;
-        try {
-          tokens = await fetchTokens(context.params.code);
-          console.log('test', tokens)
-        } catch (error) {
-          console.error(error);
-          throw new Error("Failed to fetch tokens");
-        }
-        return { tokens };
-      },
-    },
-    userinfo: {
-      async request(context: UserinfoEndpointHandler) {
-        const userInfoEndpoint = process.env.USERINFO_ENDPOINT!;
-        const response = await fetch(userInfoEndpoint, {
-          headers: {
-            Authorization: `Bearer ${context.tokens.access_token}`,
-          },
-        });
+    // token: {
+    //   async request(context: TokenEndpointHandler) {
+    //     let tokens;
+    //     try {
+    //       tokens = await fetchTokens(context.params.code);
+    //       console.log('test', tokens)
+    //     } catch (error) {
+    //       console.error(error);
+    //       throw new Error("Failed to fetch tokens");
+    //     }
+    //     return { tokens };
+    //   },
+    // },
+    // userinfo: {
+    //   async request(context: UserinfoEndpointHandler) {
+    //     const userInfoEndpoint = process.env.USERINFO_ENDPOINT!;
+    //     const response = await fetch(userInfoEndpoint, {
+    //       headers: {
+    //         Authorization: `Bearer ${context.tokens.access_token}`,
+    //       },
+    //     });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch user info");
-        }
+    //     if (!response.ok) {
+    //       throw new Error("Failed to fetch user info");
+    //     }
 
-        const profile: CustomProfile = await response.json();
-        return profile;
-      },
-    },
+    //     const profile: CustomProfile = await response.json();
+    //     return profile;
+    //   },
+    // },
     options,
   };
 }
