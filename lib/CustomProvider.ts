@@ -13,8 +13,8 @@ export default function CustomProvider(
   options: OAuthUserConfig<CustomProfile>,
 ): OAuthConfig<CustomProfile> {
   return {
-    id: "custom", // プロバイダーのID, 任意の文字列
-    name: "Custom Provider",
+    id: "keycloak", // プロバイダーのID, 任意の文字列
+    name: "Keycloak",
     type: "oidc",
     issuer: process.env.AUTH_KEYCLOAK_ISSUER,
     idToken: true,

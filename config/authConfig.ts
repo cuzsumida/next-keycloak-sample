@@ -28,6 +28,8 @@ export const authConfig: NextAuthConfig = {
           expires_at?: number;
         };
 
+        console.log('customAccount', customAccount);
+
         return {
           accessToken: customAccount.access_token,
           refreshToken: customAccount.refresh_token,
