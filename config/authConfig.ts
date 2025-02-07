@@ -29,6 +29,7 @@ export const authConfig: NextAuthConfig = {
         };
 
         console.log('customAccount', customAccount);
+        console.log('user', user); 
 
         return {
           accessToken: customAccount.access_token,

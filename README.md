@@ -37,3 +37,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# keycloak env example
+```
+AUTH_KEYCLOAK_ID=keycloak-sample
+AUTH_KEYCLOAK_SECRET=BZ36JxGm0SCuTV6MkY0a7c5tF0wH3FNC
+AUTH_KEYCLOAK_ISSUER=http://localhost:8080/realms/master
+AUTH_SECRET="UlCVQzoUlisG79HhVl3F7viy7tFra9en+fgp1z+5PDI=" # Added by `npx auth`. Read more: https://cli.authjs.dev
+NEXTAUTH_URL=http://localhost:3000
+
+AUTHORIZATION_ENDPOINT=http://localhost:8080/realms/master/protocol/openid-connect/auth
+TOKEN_ENDPOINT=http://localhost:8080/oauth/token
+USERINFO_ENDPOINT=http://localhost:8080/userinfo
+WELL_KNOWN_ENDPOINT=http://localhost:8080/.well-known/openid-configuration
+CLIENT_ID=keycloak-sample
+CLIENT_SECRET=BZ36JxGm0SCuTV6MkY0a7c5tF0wH3FNC
+
+UPSTASH_REDIS_URL=redis://localhost:6379
+UPSTASH_REDIS_TOKEN=
+
+```
