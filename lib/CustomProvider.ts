@@ -1,5 +1,4 @@
-import { fetchTokens } from "@/utils/auth";
-import { OAuthConfig, OAuthUserConfig, TokenEndpointHandler, UserinfoEndpointHandler } from "next-auth/providers";
+import { OAuthConfig, OAuthUserConfig } from "next-auth/providers";
 
 interface CustomProfile extends Record<string, string> {
   // ユーザー情報（認証基盤から取得するもの）の型定義

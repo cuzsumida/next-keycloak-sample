@@ -1,7 +1,6 @@
 import { NextAuthConfig } from "next-auth";
 import CustomProvider from "@/lib/CustomProvider";
 import {redis, storage} from "@/lib/redis";
-import { refreshAccessToken } from "@/utils/auth";
 import { UnstorageAdapter } from "@auth/unstorage-adapter";
 import { ParsedUserInfo } from "@/types/ParsedUserInfo";
 
@@ -15,74 +14,76 @@ export const authConfig: NextAuthConfig = {
       clientSecret: process.env.CLIENT_SECRET!,
     }),
   ],
-  // session: {
-  //   strategy: 'jwt', // jwt ストラテジーを使用
-  // },
+  session: {
+    // strategy: 'jwt', // jwt ストラテジーを使用セッションクッキーの名前
+  },
+  cookies: {
+    sessionToken: {
+      name: "custom-session-token", // 変更したいCookie名
+      options: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        sameSite: "lax",
+      },
+    },
+  },
 
   callbacks: {
-    async signIn(user, account, profile) {
-      console.log('SignInUserId', user.user.id);
-      console.log('SignInUserId', user)
-      console.log('SignInAccount', account);
-      console.log('SignInProfile', profile);
-
-      console.log('Redisに保存条件分岐前')
+    async signIn(user) {
+      /*
+        サインインが成功したときに呼び出されます。
+        このコールバックを使用して、サインインが成功したときにカスタムの処理を実行でき
+      */
       if (user) {
-        console.log(`user:userInfo:${user.user.id}`, 'Redisに保存します');
         // Redis に id_token を保存
         await redis.set(`user:userInfo:${user.user.id}`, JSON.stringify(user));
-        console.log(`user:userInfo:${user.user.id}`, 'Redis出来ました。');
+
+        return true;
       }
 
-      return true;
+      return false;
+
     },
 
-    async jwt({ token, account, user }) {
-      // 初回サインイン時
-      if (account && user) {
-        const customAccount = account as unknown as {
-          access_token: string;
-          refresh_token?: string;
-          expires_at?: number;
-        };
+    // async redirect() {
+    //   /*
+    //     サインイン、サインアウト、または認証エラーが発生した後にリダイレクト先の URL をカスタマイズするために使用されます。
+    //     以下サンプルコード
+    //   */
+    //   const response = await fetch(`${baseUrl}/api/resourceServer`, {
+    //     method: 'GET',
+    //     headers: {
+    //       'Authorization': `Bearer ${token.accessToken}`,          },
+    //   });
+    //   const data = await response.json();
+    //   // リソースサーバーから null が返ってきた場合、register 画面にリダイレクト
+    //   if (data === null) {
+    //     return `${baseUrl}/register`;
+    //   }
+    //   // デフォルトのリダイレクト先
+    //   return url.startsWith(baseUrl) ? url : baseUrl;
+    // },
 
-        console.log('customAccount', customAccount);
-        console.log('user', user); 
-
-        return {
-          accessToken: customAccount.access_token,
-          refreshToken: customAccount.refresh_token,
-          accessTokenExpires:
-            customAccount.expires_at
-              ? customAccount.expires_at * 1000
-              : undefined, // 有効期限をミリ秒単位に変換
-          user,
-        };
-      }
-      // それ以外の場合、トークンがまだ有効かどうかを確認し、無効であればリフレッシュを試みる
-      if (Date.now() < (token.accessTokenExpires as number)) {
-        return token;
-      }
-
-      // リフレッシュトークンを使って新しいアクセストークンを取得
-      const refreshedToken = await refreshAccessToken(token.refreshToken as string);
-
-      return {
-        ...token,
-        accessToken: refreshedToken.access_token,
-        accessTokenExpires: refreshedToken.expires_in ? Date.now() + refreshedToken.expires_in * 1000 : token.accessTokenExpires,
-        refreshToken: refreshedToken.refresh_token ?? token.refreshToken, // 新しいリフレッシュトークンが提供されない場合は、既存のものを保持
-      };
+    async jwt({ token }) {
+      /*
+        JWT トークンが作成されるときに呼び出されます。
+        このコールバックを使用して、トークンにカスタムデータを追加したり、
+        トークンの内容をカスタマイズしたりできます。
+        
+        本実装では、sessionを利用しているため、このコールバックは呼ばれません。
+      */
+      return token;
     },
 
     async session({ session, user }) {
-      // console.log('SessionUserId', session.user.id);
-      // console.log('testsession', session);
-      // // console.log('testtoken', token);
-      // console.log('testuser', user);
+      /*
+        セッションが作成または更新されるときに呼び出されます。
+        このコールバックを使用して、セッションオブジェクトにカスタムデータを追加したり、
+        セッションの内容をカスタマイズしたりできます。
+      */
 
       const userInfo = await redis.get(`user:userInfo:${user.id}`);
-      // console.log('RedisUserInfo', userInfo);
       if (userInfo) {
         // JSON文字列をオブジェクトに変換
         const parsedUserInfo: ParsedUserInfo = JSON.parse(userInfo);
@@ -99,8 +100,6 @@ export const authConfig: NextAuthConfig = {
         session.refreshToken = parsedUserInfo.account.refresh_token;
         session.user.id = user.id
       }
-
-      console.log('testsession', session);
 
       return session;
     },
