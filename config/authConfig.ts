@@ -16,6 +16,7 @@ export const authConfig: NextAuthConfig = {
   ],
   session: {
     // strategy: 'jwt', // jwt ストラテジーを使用セッションクッキーの名前
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   cookies: {
     sessionToken: {
@@ -35,6 +36,7 @@ export const authConfig: NextAuthConfig = {
         サインインが成功したときに呼び出されます。
         このコールバックを使用して、サインインが成功したときにカスタムの処理を実行でき
       */
+      console.log('signIn', user);
       if (user) {
         // Redis に id_token を保存
         await redis.set(`user:userInfo:${user.user.id}`, JSON.stringify(user));
@@ -89,17 +91,12 @@ export const authConfig: NextAuthConfig = {
         const parsedUserInfo: ParsedUserInfo = JSON.parse(userInfo);
         console.log('ParsedRedisUserInfo', parsedUserInfo);
 
-        /*
-          ここで、ID_tokenのデコードを行いBEへJSON形式でid_tokenのpayloadを渡します
-          基本的には、BFF側でデータを保存しなくても良い想定なのでRedisに保存している情報を削除しています
-          今後BFFでも必要になる可能性があるならば残しておく
-        */
-        // await redis.del(`user:userInfo:${user.user.id}`);
-
         session.accessToken = parsedUserInfo.account.access_token;
         session.refreshToken = parsedUserInfo.account.refresh_token;
         session.user.id = user.id
       }
+      // session.hoge = 'hoge3'
+      // console.log(session, 'session')
 
       return session;
     },

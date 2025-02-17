@@ -1,4 +1,4 @@
-import { auth } from "./api/auth/[...nextauth]/route";
+import { auth } from "@/auth";
 export default auth;
 
 export const config = {
